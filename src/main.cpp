@@ -3,8 +3,6 @@
 bool getInput(std::string& input)
 {
   std::cout << "$ ";
-
-  std::string input;
   std::getline(std::cin, input);
   if (input.size() > 0)
     return true;
