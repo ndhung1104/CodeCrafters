@@ -19,5 +19,5 @@ int main() {
   std::string input;
   while (getInput(input))
   // if (input == "invalid_command")
-    std::cout << input << ": command not found";
+    std::cout << input << ": command not found\n";
 }
