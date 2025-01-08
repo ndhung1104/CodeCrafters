@@ -16,8 +16,10 @@ int handleInput(const std::string& input, const std::unordered_map<std::string, 
 {
   std::stringstream ss(input);
   std::string firstArg;
-  std::getline(ss, firstArg);
-  arguments = input.substr(firstArg.size());
+  std::getline(ss, firstArg, ' ');
+  arguments = "";
+  if (firstArg.size() != input.size())
+    arguments = input.substr(firstArg.size() + 1);
   auto it = commandMap.find(firstArg);
   if (it != commandMap.end()) 
   {
