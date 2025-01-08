@@ -1,4 +1,6 @@
 #include <iostream>
+#include <unordered_map>
+#include <sstream>
 
 bool getInput(std::string& input)
 {
@@ -10,16 +12,52 @@ bool getInput(std::string& input)
   return false;
 }
 
+int handleInput(const std::string& input, const std::unordered_map<std::string, int>& commandMap, std::string& arguments)
+{
+  std::stringstream ss(input);
+  std::string firstArg;
+  std::getline(ss, firstArg);
+  arguments = input.substr(firstArg.size());
+  auto it = commandMap.find(firstArg);
+  if (it != commandMap.end()) 
+  {
+    return it->second;
+  }
+  return -1;
+}
+
+
+
 int main() {
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
 
+  std::unordered_map<std::string, int> commandMap = 
+  {
+    {"exit", 0},
+    {"echo", 1}
+  };
+
   // Uncomment this block to pass the first stage
-  std::string input;
+  std::string input, argument;
   while (getInput(input))
-    if (input == "exit 0")
-      return 0;
-    else
-      std::cout << input << ": command not found\n";
+  {
+    switch (handleInput(input, commandMap, argument)) 
+    {
+      case 0:
+          return 0;
+      case 1:
+          std::cout << argument << "\n";
+          break;
+      default:
+          std::cout << input << ": command not found\n";
+          break;
+    }
+    
+    std::cout << std::unitbuf;
+    std::cerr << std::unitbuf;
+  }
+    
+      
 }
