@@ -28,6 +28,17 @@ int handleInput(const std::string& input, const std::unordered_map<std::string, 
   return -1;
 }
 
+void checkCommand(const std::string& input, const std::unordered_map<std::string, int>& commandMap)
+{
+  auto it = commandMap.find(input);
+  if (it != commandMap.end()) 
+  {
+    std::cout << input << " is a shell builtin\n";
+  }
+  else
+    std::cout << input << ": not found\n";
+}
+
 
 
 int main() {
@@ -38,7 +49,8 @@ int main() {
   std::unordered_map<std::string, int> commandMap = 
   {
     {"exit", 0},
-    {"echo", 1}
+    {"echo", 1},
+    {"type", 2}
   };
 
   // Uncomment this block to pass the first stage
@@ -48,13 +60,16 @@ int main() {
     switch (handleInput(input, commandMap, argument)) 
     {
       case 0:
-          return 0;
+        return 0;
       case 1:
-          std::cout << argument << "\n";
-          break;
+        std::cout << argument << "\n";
+        break;
+      case 2:
+        checkCommand(argument, commandMap);
+        break;
       default:
-          std::cout << input << ": command not found\n";
-          break;
+        std::cout << input << ": command not found\n";
+        break;
     }
     
     std::cout << std::unitbuf;
