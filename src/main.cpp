@@ -18,6 +18,8 @@ int main() {
   // Uncomment this block to pass the first stage
   std::string input;
   while (getInput(input))
-  // if (input == "invalid_command")
-    std::cout << input << ": command not found\n";
+    if (input == "exit 0")
+      return 0;
+    else
+      std::cout << input << ": command not found\n";
 }
