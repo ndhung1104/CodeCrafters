@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <filesystem>
+#include <cstdlib>
 
 bool getInput(std::string& input)
 {
@@ -13,15 +14,14 @@ bool getInput(std::string& input)
   return false;
 }
 
-int handleInput(const std::string& input, const std::unordered_map<std::string, int>& commandMap, std::string& arguments)
+int handleInput(const std::string& input, const std::unordered_map<std::string, int>& commandMap, std::string& command, std::string& arguments)
 {
   std::stringstream ss(input);
-  std::string firstArg;
-  std::getline(ss, firstArg, ' ');
+  std::getline(ss, command, ' ');
   arguments = "";
-  if (firstArg.size() != input.size())
-    arguments = input.substr(firstArg.size() + 1);
-  auto it = commandMap.find(firstArg);
+  if (command.size() != input.size())
+    arguments = input.substr(command.size() + 1);
+  auto it = commandMap.find(command);
   if (it != commandMap.end()) 
   {
     return it->second;
@@ -29,23 +29,19 @@ int handleInput(const std::string& input, const std::unordered_map<std::string, 
   return -1;
 }
 
-void checkPath(const std::string& input)
+std::string checkPath(const std::string& input)
 {
   std::string systemPath = std::getenv("PATH");
   std::stringstream ss(systemPath);
   std::string path;
   while(!ss.eof())
   {
-      getline(ss, path, ':');
+      getline(ss, path, ':'); // getline(ss, path, ';'); for window
       std::string abs_path = path + '/' + input;
       if(std::filesystem::exists(abs_path))
-      {
-          std::cout << input << " is " << abs_path << std::endl;
-          return;
-      }
+        return abs_path;
   }
-
-  std::cout << input << ": not found\n";
+  return "";
 }
 
 void checkCommand(const std::string& input, const std::unordered_map<std::string, int>& commandMap)
@@ -56,7 +52,23 @@ void checkCommand(const std::string& input, const std::unordered_map<std::string
     std::cout << input << " is a shell builtin\n";
   }
   else
-    checkPath(input);
+  {
+    std::string abs_path = checkPath(input);
+    if (abs_path.size() > 0)
+      std::cout << input << " is " << abs_path << std::endl;
+    else
+      std::cout << input << ": not found\n";
+  }
+}
+
+bool checkExecutable(const std::string& command, const std::string& argument)
+{
+  std::string abs_path = checkPath(command);
+  if (abs_path.size() == 0)
+    return false;
+  
+  std::string cmd = "\"" + abs_path + "\" " + argument;
+  return std::system(cmd.c_str());
 }
 
 
@@ -74,10 +86,10 @@ int main() {
   };
 
   // Uncomment this block to pass the first stage
-  std::string input, argument;
+  std::string input, argument, command;
   while (getInput(input))
   {
-    switch (handleInput(input, commandMap, argument)) 
+    switch (handleInput(input, commandMap, command, argument)) 
     {
       case 0:
         return 0;
@@ -88,7 +100,8 @@ int main() {
         checkCommand(argument, commandMap);
         break;
       default:
-        std::cout << input << ": command not found\n";
+        if (checkExecutable(command, argument) == 0)
+          std::cout << input << ": command not found\n";
         break;
     }
     
