@@ -93,7 +93,7 @@ int main() {
     {"exit", 0},
     {"echo", 1},
     {"type", 2},
-    {"pwn", 3}
+    {"pwd", 3}
   };
 
   // Uncomment this block to pass the first stage
@@ -112,7 +112,6 @@ int main() {
         break;
       case 3:
         getCurrentPath();
-        
         break;
       default:
         if (checkExecutable(command, argument) == false)
