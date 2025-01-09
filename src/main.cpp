@@ -78,7 +78,7 @@ bool checkExecutable(const std::string& command, const std::string& argument)
 void getCurrentPath()
 {
   std::filesystem::path currentPath = std::filesystem::current_path();
-  std::cout << currentPath << std::endl;
+  std::cout << currentPath.string() << std::endl;
 }
 
 
