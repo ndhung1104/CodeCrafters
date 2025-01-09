@@ -75,6 +75,12 @@ bool checkExecutable(const std::string& command, const std::string& argument)
   return false;
 }
 
+void getCurrentPath()
+{
+  std::filesystem::path currentPath = std::filesystem::current_path();
+  std::cout << currentPath << std::endl;
+}
+
 
 
 int main() {
@@ -86,7 +92,8 @@ int main() {
   {
     {"exit", 0},
     {"echo", 1},
-    {"type", 2}
+    {"type", 2},
+    {"pwn", 3}
   };
 
   // Uncomment this block to pass the first stage
@@ -102,6 +109,10 @@ int main() {
         break;
       case 2:
         checkCommand(argument, commandMap);
+        break;
+      case 3:
+        getCurrentPath();
+        
         break;
       default:
         if (checkExecutable(command, argument) == false)
