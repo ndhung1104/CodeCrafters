@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <sstream>
+#include <filesystem>
 
 bool getInput(std::string& input)
 {
@@ -28,6 +29,25 @@ int handleInput(const std::string& input, const std::unordered_map<std::string, 
   return -1;
 }
 
+void checkPath(const std::string& input)
+{
+  std::string systemPath = std::getenv("PATH");
+  std::stringstream ss(systemPath);
+  std::string path;
+  while(!ss.eof())
+  {
+      getline(ss, path, ':');
+      std::string abs_path = path + '/' + input;
+      if(std::filesystem::exists(abs_path))
+      {
+          std::cout << input << " is " << abs_path << std::endl;
+          return;
+      }
+  }
+
+  std::cout << input << ": not found\n";
+}
+
 void checkCommand(const std::string& input, const std::unordered_map<std::string, int>& commandMap)
 {
   auto it = commandMap.find(input);
@@ -36,7 +56,7 @@ void checkCommand(const std::string& input, const std::unordered_map<std::string
     std::cout << input << " is a shell builtin\n";
   }
   else
-    std::cout << input << ": not found\n";
+    checkPath(input);
 }
 
 
