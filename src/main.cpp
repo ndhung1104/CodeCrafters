@@ -69,7 +69,10 @@ bool checkExecutable(const std::string& command, const std::string& argument)
   
   // std::string cmd = "\"" + abs_path + "\" " + argument;
   std::string cmd = command + " " + argument;
-  return std::system(cmd.c_str());
+  if (std::system(cmd.c_str()) == 0)
+    return true;
+  
+  return false;
 }
 
 
@@ -101,7 +104,7 @@ int main() {
         checkCommand(argument, commandMap);
         break;
       default:
-        if (checkExecutable(command, argument) == 0)
+        if (checkExecutable(command, argument) == false)
           std::cout << input << ": command not found\n";
         break;
     }
