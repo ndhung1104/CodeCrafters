@@ -67,7 +67,8 @@ bool checkExecutable(const std::string& command, const std::string& argument)
   if (abs_path.size() == 0)
     return false;
   
-  std::string cmd = "\"" + abs_path + "\" " + argument;
+  // std::string cmd = "\"" + abs_path + "\" " + argument;
+  std::string cmd = command + " " + argument;
   return std::system(cmd.c_str());
 }
 
