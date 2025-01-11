@@ -93,7 +93,8 @@ int main() {
     {"exit", 0},
     {"echo", 1},
     {"type", 2},
-    {"pwd", 3}
+    {"pwd", 3},
+    {"cd", 4}
   };
 
   // Uncomment this block to pass the first stage
@@ -113,6 +114,17 @@ int main() {
       case 3:
         getCurrentPath();
         break;
+      case 4:
+        try
+        {
+          std::filesystem::current_path(argument);
+        }
+        catch(const std::exception& e)
+        {
+          std::cout << command << ": " << argument << ": No such file or directory\n";
+        }
+        break;
+        
       default:
         if (checkExecutable(command, argument) == false)
           std::cout << input << ": command not found\n";
